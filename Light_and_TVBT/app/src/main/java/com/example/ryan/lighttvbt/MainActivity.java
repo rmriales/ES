@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
     EditText countdown;
     ProgressBar cdprogress;
     RadioGroup radioGroup;
+    Button remote;
     ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,20 +71,28 @@ public class MainActivity extends AppCompatActivity {
         countdown = (EditText) findViewById(R.id.timeOutEditText);
         cdprogress = (ProgressBar) findViewById(R.id.countdownProgressBar);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        remote = (Button) findViewById(R.id.remote);
 
         addListenerToRadios();
-        addOnClickListener();
+
 
         BTAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBTState();
 
         if(address == null) {
-            final LayoutInflater factory = getLayoutInflater();
+            //Get MAC address from DeviceListActivity via intent
+            Intent intent = getIntent();
+
+            //Get the MAC address from the DeviceListActivty via EXTRA
+            address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+
+
+            /*final LayoutInflater factory = getLayoutInflater();
 
             final View sdlView = factory.inflate(R.layout.select_device, null);
 
             listView = (ListView) sdlView.findViewById(R.id.listView);
-            address = getDeviceToUse(listView);
+            address = getDeviceToUse(listView);*/
         }
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -95,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private String getDeviceToUse(View view) {
+   /* private String getDeviceToUse(View view) {
         String deviceReturn;
         final LayoutInflater factory = getLayoutInflater();
 
@@ -115,30 +124,30 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         return deviceReturn;
-        }
+        }*/
 
-    private BluetoothSocket createBluetoothSocket(BluetoothDevice) throws IOException{
+    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException{
         return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
     }
 
-    private void addOnClickListener() {
-        updateButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cThread.write(time);
-            }
-        });
+
+    public void onClick (View v){
+        switch(v.getId()){
+            case R.id.button:
+                cThread.write(Integer.toString(time));
+                break;
+            case R.id.remote:
+                break;
+        }
     }
+
 
     public void onResume(){
         super.onResume();
 
         Intent intent = getIntent();
 
-        //address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
-
-
+        address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
 
         BluetoothDevice device = BTAdapter.getRemoteDevice(address);
 
@@ -188,8 +197,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (enabled.isChecked()) {
                     radioState = 1;
+                    cThread.write("enable");
                 } else if (disabled.isChecked()) {
                     radioState = -1;
+                    cThread.write("disable");
                 }
             }
         });
