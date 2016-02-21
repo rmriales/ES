@@ -37,7 +37,7 @@ public class DeviceListActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.device_list);
+        setContentView(R.layout.activity_device_list);
     }
 
     @Override
@@ -72,8 +72,7 @@ public class DeviceListActivity extends Activity {
                 mPairedDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
             }
         } else {
-            String noDevices = getResources().getText(R.string.none_paired).toString();
-            mPairedDevicesArrayAdapter.add(noDevices);
+            mPairedDevicesArrayAdapter.add("No devices paired.");
         }
     }
 

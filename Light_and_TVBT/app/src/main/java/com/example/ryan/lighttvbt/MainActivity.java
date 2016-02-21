@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String timeoutState = "timeoutState";
 
-    private int time;
+    private String time;
     private int radioState;
 
     private BluetoothAdapter BTAdapter = null;
@@ -44,13 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private ConnectedThread cThread;
     private static String address;
 
-    Button updateButton;
+
     RadioButton enabled;
     RadioButton disabled;
     EditText countdown;
-    ProgressBar cdprogress;
     RadioGroup radioGroup;
-    Button remote;
     ListView listView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +58,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
-            time = 5;
+            time = "5";
         } else {
-            time = savedInstanceState.getInt(timeoutState);
+            time = savedInstanceState.getString(timeoutState);
         }
 
-        updateButton = (Button) findViewById(R.id.button);
+
         enabled = (RadioButton) findViewById(R.id.enableRadioButton);
         disabled = (RadioButton) findViewById(R.id.disableRadioButton);
         countdown = (EditText) findViewById(R.id.timeOutEditText);
-        cdprogress = (ProgressBar) findViewById(R.id.countdownProgressBar);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        remote = (Button) findViewById(R.id.remote);
 
         addListenerToRadios();
 
@@ -79,21 +75,12 @@ public class MainActivity extends AppCompatActivity {
         BTAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBTState();
 
-        if(address == null) {
+        /*if(address == null) {
             //Get MAC address from DeviceListActivity via intent
             Intent intent = getIntent();
-
             //Get the MAC address from the DeviceListActivty via EXTRA
             address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-
-
-            /*final LayoutInflater factory = getLayoutInflater();
-
-            final View sdlView = factory.inflate(R.layout.select_device, null);
-
-            listView = (ListView) sdlView.findViewById(R.id.listView);
-            address = getDeviceToUse(listView);*/
-        }
+        }*/
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,8 +121,15 @@ public class MainActivity extends AppCompatActivity {
     public void onClick (View v){
         switch(v.getId()){
             case R.id.button:
-                cThread.write(Integer.toString(time));
+                time = countdown.getText().toString();
+                time = "t"+time;
+                cThread.write(time);
                 break;
+            case R.id.lightOffButton:
+                cThread.write("l0");
+                break;
+            case R.id.lightOnButton:
+                cThread.write("l1");
             case R.id.remote:
                 break;
         }
@@ -197,10 +191,10 @@ public class MainActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (enabled.isChecked()) {
                     radioState = 1;
-                    cThread.write("enable");
+                    cThread.write("e1");
                 } else if (disabled.isChecked()) {
                     radioState = -1;
-                    cThread.write("disable");
+                    cThread.write("e0");
                 }
             }
         });
