@@ -1,38 +1,28 @@
-package com.example.ryan.lighttvbt;
+package com.example.rmriales.lightandtvcontroller;
 
-
-import android.app.Activity;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
+
 //AppCompatActivity
-public class MainActivity extends AppCompatActivity {
+public class MainMenu extends AppCompatActivity {
 
     private static final String timeoutState = "timeoutState";
 
@@ -41,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
     private BluetoothAdapter BTAdapter = null;
     private BluetoothSocket BTSocket = null;
-   private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
+    private static final UUID BTMODULEUUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
     private ConnectedThread cThread;
     private static String address;
 
@@ -54,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_menu);
 
 
         if (savedInstanceState == null) {
@@ -75,19 +65,9 @@ public class MainActivity extends AppCompatActivity {
         BTAdapter = BluetoothAdapter.getDefaultAdapter();
         checkBTState();
 
-
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
-   @Override
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         address = data.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
@@ -153,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        /*Intent intent = getIntent();
+        Intent intent = getIntent();
 
 
         address = intent.getStringExtra(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
@@ -177,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
             cThread.start();
 
             cThread.write("1"); //check if device is connected
-        }*/
+        }
     }
 
     public void onPause(){
@@ -232,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_device_list, menu);
         return true;
     }
 

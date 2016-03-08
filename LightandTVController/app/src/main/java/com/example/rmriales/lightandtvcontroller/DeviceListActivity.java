@@ -1,5 +1,4 @@
-package com.example.ryan.lighttvbt;
-
+package com.example.rmriales.lightandtvcontroller;
 
         import java.util.Set;
         import android.app.Activity;
@@ -7,7 +6,6 @@ package com.example.ryan.lighttvbt;
         import android.bluetooth.BluetoothDevice;
         import android.content.Intent;
         import android.os.Bundle;
-        import android.support.v7.app.AppCompatActivity;
         import android.view.View;
         import android.widget.AdapterView;
         import android.widget.AdapterView.OnItemClickListener;
@@ -22,14 +20,15 @@ public class DeviceListActivity extends Activity {
     TextView textConnectionStatus;
     ListView pairedListView;
 
+    //An EXTRA to take the device MAC to the next activity
+    public static String EXTRA_DEVICE_ADDRESS;
+
     // Member fields
     private BluetoothAdapter mBtAdapter;
     private ArrayAdapter<String> mPairedDevicesArrayAdapter;
-    public static String EXTRA_DEVICE_ADDRESS;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device_list);
 
@@ -43,7 +42,6 @@ public class DeviceListActivity extends Activity {
         pairedListView = (ListView) findViewById(R.id.paired_devices);
         pairedListView.setOnItemClickListener(mDeviceClickListener);
         pairedListView.setAdapter(mPairedDevicesArrayAdapter);
-
 
     }
 
@@ -93,20 +91,21 @@ public class DeviceListActivity extends Activity {
         }
     }
 
-    private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
-            textConnectionStatus.setText("Connecting....");
-            //Get the device MAC address, which is the last 17 chars in the view
+    // Set up on-click listener for the listview
+    private OnItemClickListener mDeviceClickListener = new OnItemClickListener()
+    {
+        public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3)
+        {
+            textConnectionStatus.setText("Connecting...");
+            // Get the device MAC address, which is the last 17 chars in the View
             String info = ((TextView) v).getText().toString();
             String address = info.substring(info.length() - 17);
 
-            //Make an intent to start next acivity while taking an extra which is the MAC address
-            Intent i = new Intent(DeviceListActivity.this, MainActivity.class);
+            // Make an intent to start next activity while taking an extra which is the MAC address.
+            Intent i = new Intent(DeviceListActivity.this, MainMenu.class);
             i.putExtra(EXTRA_DEVICE_ADDRESS, address);
-
-            setResult(Activity.RESULT_OK, i);
-            finish();
+            startActivity(i);
         }
     };
+
 }
