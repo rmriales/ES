@@ -69,23 +69,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Bluetooth Enabled:"
+        android:text="Bluetooth Connected"
         android:id="@+id/textView4"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Affirmative"
-        android:id="@+id/BTActivatedTextView"
-        android:layout_alignTop="@+id/textView4"
-        android:layout_toRightOf="@+id/textView4"
-        android:layout_toEndOf="@+id/textView4"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp" />
 
     <Button
         android:layout_width="wrap_content"
@@ -124,5 +112,16 @@
         android:onClick="onClick"
         android:layout_alignTop="@+id/lightOnButton"
         android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/BTConnection"
+        android:background="#ff000d"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/lightOffButton"
+        android:layout_above="@+id/timeOutEditText"
+        android:layout_alignRight="@+id/radioGroup"
+        android:layout_alignEnd="@+id/radioGroup" />
 
 </RelativeLayout>

@@ -3,6 +3,7 @@ package com.example.rmriales.controller;
 //import android.app.Activity;
 import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,10 +17,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 //AppCompatActivity
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     RadioButton disabled;
     EditText countdown;
     RadioGroup radioGroup;
+    TextView BTIndication;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         disabled = (RadioButton) findViewById(R.id.disableRadioButton);
         countdown = (EditText) findViewById(R.id.timeOutEditText);
         radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+        BTIndication = (TextView) findViewById(R.id.BTConnection);
 
         addListenerToRadios();
 
@@ -78,9 +81,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException{
+   private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException{
         return device.createRfcommSocketToServiceRecord(BTMODULEUUID);
     }
 
@@ -98,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
             case R.id.lightOnButton:
                 cThread.write("l1");
             case R.id.remote:
+                Intent intent = new Intent(MainActivity.this, TVRemote.class);
+                startActivity(intent);
                 break;
         }
     }
@@ -106,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-        BluetoothDevice device = BTAdapter.getRemoteDevice(address);
+       BluetoothDevice device = BTAdapter.getRemoteDevice(address);
 
 
            try {
@@ -116,24 +119,25 @@ public class MainActivity extends AppCompatActivity {
             }
             try {
                 BTSocket.connect();
+                BTIndication.setBackgroundColor(Color.GREEN);
             } catch (IOException e2) {
                 try {
-                    Log.e("","trying fallback...");
-
                     BTSocket =(BluetoothSocket) device.getClass().getMethod("createRfcommSocket", new Class[] {int.class}).invoke(device,1);
                     BTSocket.connect();
-
-                    Log.e("","Connected");
+                    BTIndication.setBackgroundColor(Color.GREEN);
                 }
-                catch (Exception e3) {
+               catch (Exception e3) {
                     Log.e("", "Couldn't establish Bluetooth connection!");
                 }
 
-            }
+           }
 
-            cThread = new ConnectedThread(BTSocket);
-            cThread.start();
-            cThread.write("1");
+            try {
+                cThread = new ConnectedThread(BTSocket);
+                cThread.start();
+            }catch(Exception e4){
+                Toast.makeText(getBaseContext(),"BTSocket not open.",Toast.LENGTH_LONG).show();
+            }
         }
 
 
@@ -200,13 +204,12 @@ public class MainActivity extends AppCompatActivity {
 
         //creation of the connect thread
         public ConnectedThread(BluetoothSocket socket) {
-            InputStream tmpIn = null;
             OutputStream tmpOut = null;
 
             try {
                 //Create I/O streams for connection
                 tmpOut = socket.getOutputStream();
-            } catch (IOException e) { }
+            } catch (IOException e) { Toast.makeText(getBaseContext(), "Can't get Output Stream.", Toast.LENGTH_LONG).show();}
 
             mmOutStream = tmpOut;
         }
