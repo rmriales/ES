@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.lightOnButton:
                 cThread.write("l1");
+                break;
             case R.id.remote:
                 Intent intent = new Intent(MainActivity.this, TVRemote.class);
                 startActivity(intent);
